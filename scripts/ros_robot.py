@@ -101,7 +101,9 @@ class RosRobot:
         # self.stop_acc = 0.3
         
         self.vel = 0.15
-        self.acc = 0.15
+        # self.acc = 0.15
+        self.acc = 0.09
+
         self.stop_acc = 0.1
 
         self.cmd_velocity_vector = []

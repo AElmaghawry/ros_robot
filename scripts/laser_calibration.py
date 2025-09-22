@@ -34,15 +34,15 @@ class robot_laser_calibration:
         self.robot = RosRobot(self.ur_robot)
         # laser topic for the point cloud 
         # self.radius = [0.2, 0.25]
-        self.radius = [0.25, 0.25]
+        self.radius = [0.085,0.085]
         self.calibration_poses = [] #laser poses relative to bing bong
-        self.N_cycle = 5#5
-        self.max_angle = 0.3#0.4
+        self.N_cycle = 10#5
+        self.max_angle = 0.3 #0.4s
         self.N_pose_per_cycle = 20 #20
         self.dump_data_list = []
         # self.dump_file_name = str(date.today()) + '.pickle'
         current_datetime = datetime.now()
-        self.dump_file_name = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") + '.pickle'
+        self.dump_file_name = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") + '200_laserCalibration.pickle'
         
         # rospy.init_node('point_cloud_acquisition')
         self.point_cloud_topic = "/scancontrol_pointcloud"
@@ -105,7 +105,7 @@ class robot_laser_calibration:
                 ry = theta * math.sin(phi)
                 # rz = 0.0
                 # rz = 0.2 * (2 * random.random() - 1)
-                rz = 0.12 * (2 * random.random() - 1)
+                rz = 0.35 * (2 * random.random() - 1)
 
                 transformation_matrix = np.eye(4)
                 transformation_matrix[:3,:3] = R.from_rotvec([rx, ry, rz]).as_matrix().transpose()
