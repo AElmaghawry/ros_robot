@@ -102,7 +102,7 @@ class RosRobot:
         
         self.vel = 0.15
         # self.acc = 0.15
-        self.acc = 0.09
+        self.acc = 0.03
 
         self.stop_acc = 0.1
 
@@ -121,8 +121,8 @@ class RosRobot:
         # assert isinstance(robot_controller, UrRtde)
         self.robot_controller = robot_controller
 
-        self.current_TCP = 'davis'
-        self.set_TCP('davis')
+        self.current_TCP = 'scancontrol_intermediate'
+        self.set_TCP('scancontrol_intermediate')
 
         time.sleep(0.2)
 
@@ -155,7 +155,7 @@ class RosRobot:
         self.stop_robot = rospy.Service('stop_robot', setValue, self.stop_robot_cb)
         
         self.rate = rospy.Rate(200)
-        self.rate_c = rospy.Rate(200)
+        self.rate_c = rospy.Rate(1)
 
         self.robot_pose = PoseStamped()
         self.camera_pose = PoseStamped()
@@ -235,8 +235,8 @@ class RosRobot:
 
             self.cmd_velocity_vector = [TCP_velocity[0][0], TCP_velocity[1][0], TCP_velocity[2][0], 0., 0., 0.]
 
-            if (np.sum(np.abs(self.cmd_velocity_vector))==0 and not self.move_vel):
-                    self.move_vel = True
+            if (not self.move_vel):
+                self.move_vel = True
 
         else:         
             _, TCP_to_current_TCP_transformation = self.kinematics.receive_transform('ur_base', self.current_TCP) #This takes too much time, TODO: find alternative
@@ -246,8 +246,8 @@ class RosRobot:
 
             self.cmd_velocity_vector = [TCP_velocity[0][0], TCP_velocity[1][0], TCP_velocity[2][0], TCP_angular_velocity[0][0], TCP_angular_velocity[1][0], TCP_angular_velocity[2][0]]
 
-            if (np.sum(np.abs(self.cmd_velocity_vector))==0 and not self.move_vel):
-                    self.move_vel = True
+            if (not self.move_vel):
+                self.move_vel = True
 
 
     def move_pose_callback(self, pose_msg):
@@ -383,9 +383,11 @@ class RosRobot:
     def run_controller(self):
         while not rospy.is_shutdown():
             
-            if (np.sum(np.abs(self.cmd_velocity_vector))!=0 or self.move_vel):
+            # if (np.sum(np.abs(self.cmd_velocity_vector))!=0 or self.move_vel):
+            if self.move_vel:
                 self.robot_controller.speed_command(self.cmd_velocity_vector, self.acc)
                 self.move_vel = False
+                rospy.loginfo("Sending velocity command:", self.cmd_velocity_vector)
             
             self.rate_c.sleep()
 

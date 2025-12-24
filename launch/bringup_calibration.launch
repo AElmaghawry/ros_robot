@@ -19,8 +19,10 @@
 <!-- UR10E - 18-3-2024 calibration sphere-->
 	<!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0.745 0.1 0.155747 4.71239 0 3.14 ur_base ping_pong" />   -->
 	<!-- ping Pong calibration SANAD  -->
-	<node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0.81 0.08 0.13574791 4.71239 0 3.14 ur_base ping_pong" />  
-	
+	<!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0.81 0.08 0.13574791 4.71239 0 3.14 ur_base ping_pong" />   -->
+
+	<!-- UR10 Calibration for Blue laser at Sanad 22-12-2025 -->
+	<node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="-0.712 -0.47 0.18 1.57 0 3.14 ur_base ping_pong" />  
 
 	<!---=================================================================================================================================================================-->
 	<!-- Robot Calibration Node -->
