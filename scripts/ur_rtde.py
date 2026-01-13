@@ -34,7 +34,7 @@ class UrRtde(Robot):
         self.robot_c.moveL(pose_list, vel, acc) #TODO: Debug wait
     
     def speed_command(self, twist_vec, acc):
-        self.robot_c.speedL(twist_vec, acc, 0)
+        self.robot_c.speedL(twist_vec, acc, 0.01)
 
     def get_pose(self):
         return self.robot_r.getActualTCPPose()

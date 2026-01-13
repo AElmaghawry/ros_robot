@@ -154,8 +154,8 @@ class RosRobot:
         self.change_ref_acc = rospy.Service('change_ref_acc', setValue, self.change_ref_acc_cb)
         self.stop_robot = rospy.Service('stop_robot', setValue, self.stop_robot_cb)
         
-        self.rate = rospy.Rate(200)
-        self.rate_c = rospy.Rate(1)
+        self.rate = rospy.Rate(100)
+        self.rate_c = rospy.Rate(100)
 
         self.robot_pose = PoseStamped()
         self.camera_pose = PoseStamped()
@@ -235,8 +235,8 @@ class RosRobot:
 
             self.cmd_velocity_vector = [TCP_velocity[0][0], TCP_velocity[1][0], TCP_velocity[2][0], 0., 0., 0.]
 
-            if (not self.move_vel):
-                self.move_vel = True
+            if (np.sum(np.abs(self.cmd_velocity_vector))==0 and not self.move_vel):
+                    self.move_vel = True
 
         else:         
             _, TCP_to_current_TCP_transformation = self.kinematics.receive_transform('ur_base', self.current_TCP) #This takes too much time, TODO: find alternative
@@ -246,8 +246,8 @@ class RosRobot:
 
             self.cmd_velocity_vector = [TCP_velocity[0][0], TCP_velocity[1][0], TCP_velocity[2][0], TCP_angular_velocity[0][0], TCP_angular_velocity[1][0], TCP_angular_velocity[2][0]]
 
-            if (not self.move_vel):
-                self.move_vel = True
+            if (np.sum(np.abs(self.cmd_velocity_vector))==0 and not self.move_vel):
+                    self.move_vel = True
 
 
     def move_pose_callback(self, pose_msg):
@@ -384,14 +384,13 @@ class RosRobot:
         while not rospy.is_shutdown():
             
             # if (np.sum(np.abs(self.cmd_velocity_vector))!=0 or self.move_vel):
-            if self.move_vel:
+            if (np.sum(np.abs(self.cmd_velocity_vector))!=0 or self.move_vel):
                 self.robot_controller.speed_command(self.cmd_velocity_vector, self.acc)
                 self.move_vel = False
-                rospy.loginfo("Sending velocity command:", self.cmd_velocity_vector)
             
             self.rate_c.sleep()
 
- 
+
     def update_poses(self):
         self.pose = self.robot_controller.get_pose()
 
